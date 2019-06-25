@@ -4,6 +4,7 @@ import 'firebase/auth';
 
 import fbConnection from '../helpers/data/connection';
 
+import Navbar from '../components/navbar';
 import Auth from '../components/auth';
 import Home from '../components/home';
 
@@ -29,14 +30,16 @@ class Fishstore extends React.Component {
   }
 
   render() {
+    const { authed } = this.state;
     const loadComponent = () => {
-      if (this.state.authed) {
+      if (authed) {
         return <Home />;
       }
       return <Auth />;
     };
     return (
       <div className="text-center">
+        <Navbar authed={authed} />
         {loadComponent()}
       </div>
     );
