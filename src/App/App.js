@@ -1,27 +1,49 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.scss';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <button className="btn btn-dark">btn</button>
-      </header>
-    </div>
-  );
+import fbConnection from '../helpers/data/connection';
+
+import Navbar from '../components/navbar';
+import Auth from '../components/auth';
+import Home from '../components/home';
+
+fbConnection();
+
+class Fishstore extends React.Component {
+  state = {
+    authed: false,
+  }
+
+  componentDidMount() {
+    this.removeListener = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({ authed: true });
+      } else {
+        this.setState({ authed: false });
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this.removeListener();
+  }
+
+  render() {
+    const { authed } = this.state;
+    const loadComponent = () => {
+      if (authed) {
+        return <Home />;
+      }
+      return <Auth />;
+    };
+    return (
+      <div className="text-center">
+        <Navbar authed={authed} />
+        {loadComponent()}
+      </div>
+    );
+  }
 }
 
-export default App;
+export default Fishstore;
