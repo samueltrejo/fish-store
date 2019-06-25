@@ -24,6 +24,10 @@ class Fishstore extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    this.removeListener();
+  }
+
   render() {
     const loadComponent = () => {
       if (this.state.authed) {
