@@ -2,6 +2,8 @@ import React from 'react';
 
 import fishData from '../helpers/data/fish-data';
 
+import Fish from './fish';
+
 class Inventory extends React.Component {
   state = {
     fishes: [],
@@ -14,9 +16,15 @@ class Inventory extends React.Component {
   }
 
   render() {
+    const fishComponents = this.state.fishes.map(fish => (
+      <Fish key={fish.id} fish={fish}/>
+    ));
     return (
       <div className="Inventory col-4">
-        <h3>Inventory</h3>
+        <h2>Inventory</h2>
+        <ul className="fishes pl-0">
+          {fishComponents}
+        </ul>
       </div>
     );
   }
