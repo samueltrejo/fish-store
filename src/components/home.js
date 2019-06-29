@@ -13,6 +13,7 @@ class Home extends React.Component {
   state = {
     orders: [],
     fishes: [],
+    fishOrder: {},
   }
 
   getOrders = () => {
@@ -38,11 +39,17 @@ class Home extends React.Component {
       .catch(error => console.error(error));
   }
 
+  addFishToOrder = (fishId) => {
+    const fishOrderCopy = { ...this.state.fishOrder };
+    fishOrderCopy[fishId] = fishOrderCopy[fishId] + 1 || 1;
+    this.setState({ fishOrder: fishOrderCopy });
+  }
+
   render() {
     const { fishes, orders } = this.state;
     return (
       <div className="Home row">
-        <Inventory fishes={fishes} />
+        <Inventory fishes={fishes} addFishToOrder={this.addFishToOrder}/>
         <NewOrder />
         <Orders orders={orders} deleteOrder={this.deleteOrder} />
       </div>
