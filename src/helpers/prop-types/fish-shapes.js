@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+// install prop-types, $ npm install prop-types --save
 
 const fishShape = PropTypes.shape({
   id: PropTypes.string.isRequired,
