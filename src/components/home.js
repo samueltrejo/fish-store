@@ -46,11 +46,11 @@ class Home extends React.Component {
   }
 
   render() {
-    const { fishes, orders } = this.state;
+    const { fishes, orders, fishOrder } = this.state;
     return (
       <div className="Home row">
         <Inventory fishes={fishes} addFishToOrder={this.addFishToOrder}/>
-        <NewOrder />
+        <NewOrder fishes={fishes} fishOrder={fishOrder} />
         <Orders orders={orders} deleteOrder={this.deleteOrder} />
       </div>
     );
