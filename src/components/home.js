@@ -14,6 +14,7 @@ class Home extends React.Component {
     orders: [],
     fishes: [],
     fishOrder: {},
+    orderEditing: {},
   }
 
   getOrders = () => {
@@ -51,7 +52,7 @@ class Home extends React.Component {
     this.setState({ fishOrder: fishOrderCopy });
   }
 
-  saveNewOrder = (orderName) => {
+  addNewOrder = (orderName) => {
     const newOrder = {
       fishes: { ...this.state.fishOrder },
       name: orderName,
@@ -66,8 +67,41 @@ class Home extends React.Component {
       .catch(error => console.error(error));
   }
 
+  updateExistingOrder = (orderName) => {
+    const updateOrder = { ...this.state.orderEditing };
+    const orderId = updateOrder.id;
+    updateOrder.fishes = this.state.fishOrder;
+    updateOrder.name = orderName;
+    delete updateOrder.id;
+
+    ordersData.editOrder(orderId, updateOrder)
+      .then(() => {
+        this.setState({ fishOrder: {}, orderEditing: {} });
+        this.getOrders();
+      })
+      .catch(error => console.error(error));
+  }
+
+  saveNewOrder = (orderName) => {
+    if (Object.keys(this.state.orderEditing).length > 0) {
+      this.updateExistingOrder(orderName);
+    } else {
+      this.addNewOrder(orderName);
+    }
+  }
+
+  selectOrderToEdit = (orderId) => {
+    const selectedOrder = this.state.orders.find(x => x.id === orderId);
+    this.setState({ fishOrder: selectedOrder.fishes, orderEditing: selectedOrder });
+  }
+
   render() {
-    const { fishes, orders, fishOrder } = this.state;
+    const {
+      fishes,
+      orders,
+      fishOrder,
+      orderEditing,
+    } = this.state;
     return (
       <div className="Home row">
         <Inventory fishes={fishes} addFishToOrder={this.addFishToOrder}/>
@@ -76,8 +110,12 @@ class Home extends React.Component {
           fishOrder={fishOrder}
           removeFromOrder={this.removeFromOrder}
           saveNewOrder={this.saveNewOrder}
+          orderEditing={orderEditing}
         />
-        <Orders orders={orders} deleteOrder={this.deleteOrder} />
+        <Orders
+          orders={orders}
+          deleteOrder={this.deleteOrder}
+          selectOrderToEdit={this.selectOrderToEdit}/>
       </div>
     );
   }
