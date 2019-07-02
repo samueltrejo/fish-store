@@ -8,11 +8,12 @@ import Fish from './fish';
 class Inventory extends React.Component {
   static propTypes = {
     fishes: PropTypes.arrayOf(fishShapes.fishShape),
+    addFishToOrder: PropTypes.func.isRequired,
   }
 
   render() {
     const fishComponents = this.props.fishes.map(fish => (
-      <Fish key={fish.id} fish={fish}/>
+      <Fish key={fish.id} fish={fish} addFishToOrder={this.props.addFishToOrder}/>
     ));
     return (
       <div className="Inventory col-4">

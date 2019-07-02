@@ -13,6 +13,7 @@ class Home extends React.Component {
   state = {
     orders: [],
     fishes: [],
+    fishOrder: {},
   }
 
   getOrders = () => {
@@ -38,12 +39,44 @@ class Home extends React.Component {
       .catch(error => console.error(error));
   }
 
+  addFishToOrder = (fishId) => {
+    const fishOrderCopy = { ...this.state.fishOrder };
+    fishOrderCopy[fishId] = fishOrderCopy[fishId] + 1 || 1;
+    this.setState({ fishOrder: fishOrderCopy });
+  }
+
+  removeFromOrder = (fishId) => {
+    const fishOrderCopy = { ...this.state.fishOrder };
+    delete fishOrderCopy[fishId];
+    this.setState({ fishOrder: fishOrderCopy });
+  }
+
+  saveNewOrder = (orderName) => {
+    const newOrder = {
+      fishes: { ...this.state.fishOrder },
+      name: orderName,
+      dateTime: Date.now(),
+      uid: firebase.auth().currentUser.uid,
+    };
+    ordersData.postOrder(newOrder)
+      .then(() => {
+        this.setState({ fishOrder: {} });
+        this.getOrders();
+      })
+      .catch(error => console.error(error));
+  }
+
   render() {
-    const { fishes, orders } = this.state;
+    const { fishes, orders, fishOrder } = this.state;
     return (
       <div className="Home row">
-        <Inventory fishes={fishes} />
-        <NewOrder />
+        <Inventory fishes={fishes} addFishToOrder={this.addFishToOrder}/>
+        <NewOrder
+          fishes={fishes}
+          fishOrder={fishOrder}
+          removeFromOrder={this.removeFromOrder}
+          saveNewOrder={this.saveNewOrder}
+        />
         <Orders orders={orders} deleteOrder={this.deleteOrder} />
       </div>
     );
